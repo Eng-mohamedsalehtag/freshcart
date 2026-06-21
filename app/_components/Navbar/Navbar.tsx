@@ -121,11 +121,11 @@ export default function Navbar() {
               </Link>
               <Link
                 className={
-                  pathName === "/logout"
+                  pathName === "/login"
                     ? "text-green-500 font-bold"
                     : "text-gray-700 hover:text-green-500 transition-all duration-300"
                 }
-                href="/logout"
+                href="/login"
               >
                 Sign Out
               </Link>
