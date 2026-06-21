@@ -1,0 +1,71 @@
+"use client";
+
+import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/pagination";
+
+const slides = [
+  "/screens/slider/slider-image-1.jpeg",
+  "/screens/slider/slider-image-2.jpeg",
+  "/screens/slider/slider-image-3.jpeg",
+];
+
+export default function MainSlider() {
+  return (
+    <div className="container mx-auto px-4 py-6">
+      <div className="grid grid-cols-12 gap-4 h-[400px]">
+        {/* Left Section */}
+        <div className="col-span-9 h-full">
+          <Swiper
+            modules={[Autoplay, Pagination]}
+            autoplay={{
+              delay: 2000,
+              disableOnInteraction: false,
+            }}
+            pagination={{ clickable: true }}
+            loop
+            className="h-full rounded-lg overflow-hidden "
+          >
+            {slides.map((slide, index) => (
+              <SwiperSlide key={index}>
+                <div className="relative h-full w-full">
+                  <Image
+                    src={slide}
+                    alt={`slide-${index}`}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        {/* Right Section (Static) */}
+        <div className="col-span-3 flex flex-col gap-4 h-full">
+          <div className="relative flex-1 overflow-hidden rounded-lg">
+            <Image
+              src="/screens/slider/grocery-banner.png"
+              alt="banner-1"
+              fill
+              className="object-cover"
+            />
+          </div>
+
+          <div className="relative flex-1 overflow-hidden rounded-lg">
+            <Image
+              src="/screens/slider/grocery-banner-2.jpeg"
+              alt="banner-2"
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
