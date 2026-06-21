@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
+import { Autoplay, Pagination, Keyboard, Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -20,12 +20,20 @@ export default function MainSlider() {
         {/* Left Section */}
         <div className="col-span-9 h-full">
           <Swiper
-            modules={[Autoplay, Pagination]}
+            modules={[Autoplay, Pagination, Keyboard, Navigation]}
+            grabCursor={true}
             autoplay={{
               delay: 2000,
               disableOnInteraction: false,
             }}
+            navigation={{
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            }}
             pagination={{ clickable: true }}
+            keyboard={{
+              enabled: true,
+            }}
             loop
             className="h-full rounded-lg overflow-hidden "
           >
@@ -36,6 +44,7 @@ export default function MainSlider() {
                     src={slide}
                     alt={`slide-${index}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
                     priority
                   />
@@ -52,6 +61,7 @@ export default function MainSlider() {
               src="/screens/slider/grocery-banner.png"
               alt="banner-1"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover"
             />
           </div>
@@ -61,6 +71,7 @@ export default function MainSlider() {
               src="/screens/slider/grocery-banner-2.jpeg"
               alt="banner-2"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover"
             />
           </div>
