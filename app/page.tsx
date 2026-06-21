@@ -1,14 +1,7 @@
 import React from "react";
-
+import { getProducts } from "@/apis/allproducts";
 export default async function Page() {
-  const response = await fetch(
-    "https://ecommerce.routemisr.com/api/v1/products",
-    {
-      cache: "force-cache",
-    },
-  );
-
-  const { data } = await response.json();
+  const data = await getProducts();
 
   return (
     <div className="container mx-auto p-4 md:p-8">
