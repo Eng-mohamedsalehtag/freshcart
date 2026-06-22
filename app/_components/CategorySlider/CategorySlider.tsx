@@ -1,8 +1,8 @@
 import { getCategories } from "@/apis/allcategory";
 import SwiperCategory from "../swiperCategory/SwiperCategory";
-
+import type { Category } from "@/types/category.type";
 export default async function CategorySlider() {
-  const data = await getCategories();
+  const data: Category[] = await getCategories();
 
   return (
     <div className="container mx-auto px-4 py-4">

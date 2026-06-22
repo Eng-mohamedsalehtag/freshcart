@@ -3,8 +3,12 @@ import { Autoplay, Keyboard, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-
-export default function SwiperCategory({ categories }: any) {
+import type { Category } from "@/types/category.type";
+export default function SwiperCategory({
+  categories,
+}: {
+  categories: Category[];
+}) {
   return (
     <Swiper
       modules={[Autoplay, Pagination, Keyboard, Navigation]}
@@ -21,7 +25,7 @@ export default function SwiperCategory({ categories }: any) {
       loop
       className="h-full rounded-lg overflow-hidden "
     >
-      {categories.map((category: any, index: number) => (
+      {categories.map((category: Category, index: number) => (
         <SwiperSlide key={index}>
           <div className="relative h-full w-full">
             <img
