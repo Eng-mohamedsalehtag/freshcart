@@ -23,7 +23,8 @@ export default async function page({ params }: { params: { id: string } }) {
             {category.name}
           </h1>
           <p className="text-gray-500 max-w-xl mx-auto text-lg">
-            Explore our premium selection of products in the {category.name} category.
+            Explore our premium selection of products in the {category.name}{" "}
+            category.
           </p>
         </div>
       </div>

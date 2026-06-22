@@ -1,5 +1,7 @@
 import React from "react";
 import getSingleProduct from "@/apis/singleproducts";
+import ProductSlider from "./ProductSlider";
+
 export default async function ProductDetailsPage({ params }: any) {
   const { id } = await params;
   const data = await getSingleProduct(id);
@@ -9,11 +11,7 @@ export default async function ProductDetailsPage({ params }: any) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
         {/* Product Image */}
         <div className="col-span-1">
-          <img
-            src={data.imageCover}
-            alt={data.title}
-            className="w-full max-w-sm mx-auto h-auto object-contain"
-          />
+          <ProductSlider images={data.images} title={data.title} />
         </div>
 
         {/* Product Details */}
