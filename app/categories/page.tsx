@@ -6,23 +6,31 @@ import Link from "next/link";
 export default async function Page() {
   const category: Category[] = await getCategories();
   return (
-    <div className="container mx-auto p-4 md:p-4">
-      <h2 className="text-2xl font-bold mb-6 text-center text-green-500">
+    <div className="container mx-auto px-4 py-8 md:py-12">
+      <h2 className="text-3xl font-bold mb-8 text-center text-green-600">
         All Categories
       </h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {category.map((category: Category) => (
-          <Link href={"/"} key={category._id} className="cursor-pointer block">
-            <div className="text-center p-4 hover:shadow-lg hover:border border-green-500 rounded-lg">
-              <Image
-                src={category.image}
-                alt={category.name}
-                className="w-full h-40 object-fit rounded-lg"
-                width={500}
-                height={500}
-                unoptimized
-              />
-              <p className="mt-2 text-lg font-semibold">{category.name}</p>
+          <Link
+            href={`/categories/${category._id}`}
+            key={category._id}
+            className="group cursor-pointer block"
+          >
+            <div className="flex flex-col items-center bg-white p-4 rounded-xl shadow-sm border border-transparent hover:shadow-xl hover:border-green-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+              <div className="w-full relative overflow-hidden rounded-lg bg-gray-50">
+                <Image
+                  src={category.image}
+                  alt={category.name}
+                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
+                  width={500}
+                  height={500}
+                  unoptimized
+                />
+              </div>
+              <h3 className="mt-4 text-xl font-semibold text-gray-800 group-hover:text-green-600 transition-colors duration-300">
+                {category.name}
+              </h3>
             </div>
           </Link>
         ))}
