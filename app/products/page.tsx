@@ -8,6 +8,9 @@ export default async function Page() {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
+      <h2 className="text-2xl font-bold mb-6 text-center text-green-500">
+        All products
+      </h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
         {products.map((product: Product) => (
           <Link

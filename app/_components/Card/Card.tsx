@@ -1,6 +1,6 @@
 import React from "react";
-
-function Card({ product }: any) {
+import type { Product } from "@/types/product.type";
+function Card({ product }: { product: Product }) {
   return (
     <div
       key={product._id}
