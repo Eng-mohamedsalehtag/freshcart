@@ -144,7 +144,12 @@ export default function RegisterPage() {
           />
 
           <div className="flex justify-end">
-            <Button type="submit">Register</Button>
+            <Button
+              className="w-full bg-green-400 hover:bg-green-500 text-white font-semibold"
+              type="submit"
+            >
+              Register
+            </Button>
           </div>
         </form>
       </Form>
