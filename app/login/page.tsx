@@ -116,6 +116,27 @@ export default function RegisterPage() {
           </div>
         </form>
       </Form>
+      {/* Divider */}
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t"></span>
+        </div>
+
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-white px-3 text-gray-500">Or continue with</span>
+        </div>
+      </div>
+
+      {/* Google Button */}
+      <Button
+        variant="outline"
+        type="button"
+        className="w-full flex items-center justify-center gap-3 h-11"
+        onClick={() => signIn("google", { callbackUrl: "/" })}
+      >
+        <i className="fa-brands fa-google text-red-500 text-lg"></i>
+        Continue with Google
+      </Button>
     </section>
   );
 }

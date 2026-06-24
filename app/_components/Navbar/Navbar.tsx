@@ -6,6 +6,18 @@ import { useState } from "react";
 import logo from "../../../public/screens/freshcart-logo.svg";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+import { LogOut, User, ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -76,18 +88,50 @@ export default function Navbar() {
               {status === "loading" ? (
                 <span>Loading...</span>
               ) : session ? (
-                <>
-                  <span className="text-green-500 font-semibold">
-                    {session.user.name}
-                  </span>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="outline-none cursor-pointer">
+                    <Avatar>
+                      <AvatarImage src={session.user?.image ?? ""} />
 
-                  <button
-                    onClick={() => signOut({ callbackUrl: "/login" })}
-                    className="text-gray-700 hover:text-green-500 transition-all duration-300 cursor-pointer"
-                  >
-                    Sign Out
-                  </button>
-                </>
+                      <AvatarFallback className="bg-green-500 text-white">
+                        {session.user?.name?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent className="w-56" align="end">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col">
+                        <span>{session.user?.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {session.user?.email}
+                        </span>
+                      </div>
+                    </DropdownMenuLabel>
+
+                    <DropdownMenuSeparator />
+
+                    <DropdownMenuItem className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem className="cursor-pointer">
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      Orders
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator />
+
+                    <DropdownMenuItem
+                      className="cursor-pointer text-red-500"
+                      onClick={() => signOut({ callbackUrl: "/login" })}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <>
                   <Link
@@ -132,18 +176,12 @@ export default function Navbar() {
               <li>
                 <Link href="/">Home</Link>
               </li>
-              <li>
-                <Link href="/cart">Cart</Link>
-              </li>
-              <li>
-                <Link href="/products">Products</Link>
-              </li>
-              <li>
-                <Link href="/categories">Categories</Link>
-              </li>
-              <li>
-                <Link href="/brands">Brands</Link>
-              </li>
+              {session &&
+                protectedLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href}>{link.label}</Link>
+                  </li>
+                ))}
 
               <div className="flex gap-4 text-xl">
                 <i className="fa-brands fa-instagram"></i>
@@ -153,9 +191,18 @@ export default function Navbar() {
               </div>
 
               <li className="flex gap-4">
-                <Link href="/login">Login</Link>
-                <Link href="/register">Register</Link>
-                <Link href="/logout">Sign Out</Link>
+                {status === "loading" ? (
+                  <span>Loading...</span>
+                ) : session ? (
+                  <button onClick={() => signOut({ callbackUrl: "/login" })}>
+                    Sign Out
+                  </button>
+                ) : (
+                  <>
+                    <Link href="/login">Login</Link>
+                    <Link href="/register">Register</Link>
+                  </>
+                )}
               </li>
             </ul>
           </div>

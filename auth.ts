@@ -1,8 +1,13 @@
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: AuthOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID!,
+      clientSecret: process.env.GOOGLE_SECRET!,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -28,8 +33,8 @@ export const authOptions: AuthOptions = {
         }
 
         return {
-          user: payload.user,
-          token: payload.token,
+          ...payload.user,
+          accessToken: payload.token,
         };
       },
     }),
@@ -39,17 +44,22 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      // أول مرة تسجيل الدخول
       if (user) {
-        token.user = user?.user;
-        token.token = user?.token;
+        return {
+          ...token,
+          ...user,
+        };
       }
 
       return token;
     },
 
     async session({ session, token }) {
-      session.user = token?.user;
+      session.user.name = token.name as string;
+      session.user.email = token.email as string;
+      session.user.image = token.image as string;
+      session.user.role = token.role as string;
+      session.accessToken = token.accessToken as string;
 
       return session;
     },
