@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -32,21 +33,35 @@ export default function RegisterPage() {
   });
 
   async function onSubmit(values: LoginFormData) {
-    try {
-      const res = await loginApi(values);
-      toast.success(res.data.message, {
-        position: "top-center",
-        duration: 2000,
-      });
-      router.push("/");
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "Something went wrong", {
-          position: "top-center",
-          duration: 2000,
-        });
-      }
+    // try {
+    //   const res = await loginApi(values);
+    //   toast.success(res.data.message, {
+    //     position: "top-center",
+    //     duration: 2000,
+    //   });
+    //   router.push("/");
+    // } catch (error) {
+    //   if (axios.isAxiosError(error)) {
+    //     toast.error(error.response?.data?.message || "Something went wrong", {
+    //       position: "top-center",
+    //       duration: 2000,
+    //     });
+    //   }
+    // }
+
+    const res = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
+
+    if (res?.error) {
+      toast.error(res.error);
+      return;
     }
+
+    toast.success("Login successfully");
+    router.push("/");
   }
 
   return (
