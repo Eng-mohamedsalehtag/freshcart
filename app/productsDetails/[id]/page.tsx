@@ -1,6 +1,6 @@
-import React from "react";
 import getSingleProduct from "@/apis/singleproducts";
 import ProductSlider from "./ProductSlider";
+import { AddBtnCart } from "@/app/_components/AddBtnCart/AddBtnCart";
 
 export default async function ProductDetailsPage({ params }: any) {
   const { id } = await params;
@@ -32,9 +32,7 @@ export default async function ProductDetailsPage({ params }: any) {
             </div>
           </div>
 
-          <button className="w-full bg-green-500 text-white py-2.5 rounded-md hover:bg-green-600 transition-colors mt-4">
-            <i className="fa-solid fa-cart-plus"></i> add to cart
-          </button>
+          <AddBtnCart id={data._id} />
         </div>
       </div>
     </div>
