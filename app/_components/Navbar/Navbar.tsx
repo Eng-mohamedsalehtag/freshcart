@@ -24,7 +24,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathName = usePathname();
   const { data: session, status } = useSession();
-  const { cartNumber } = useContext(CartContext);
+  const cartContext = useContext(CartContext);
+  const cartNumber = cartContext?.cartNumber ?? 0;
   const protectedLinks = [
     { href: "/cart", label: "Cart" },
     { href: "/products", label: "Products" },
