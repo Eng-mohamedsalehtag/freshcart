@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import logo from "../../../public/screens/freshcart-logo.svg";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
@@ -18,11 +18,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { LogOut, User, ShoppingCart } from "lucide-react";
+import { CartContext } from "@/Context/CartContext";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathName = usePathname();
   const { data: session, status } = useSession();
+  const { cartNumber } = useContext(CartContext);
   const protectedLinks = [
     { href: "/cart", label: "Cart" },
     { href: "/products", label: "Products" },
@@ -88,50 +90,62 @@ export default function Navbar() {
               {status === "loading" ? (
                 <span>Loading...</span>
               ) : session ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="outline-none cursor-pointer">
-                    <Avatar>
-                      <AvatarImage src={session.user?.image ?? ""} />
+                <div className="flex gap-4 items-center">
+                  <Link
+                    href="/cart"
+                    className="relative cursor-pointer hover:text-green-500 transition-all duration-300"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    <span className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full px-2 text-xs">
+                      {cartNumber}
+                    </span>
+                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="outline-none cursor-pointer">
+                      <Avatar>
+                        <AvatarImage src={session.user?.image ?? ""} />
 
-                      <AvatarFallback className="bg-green-500 text-white">
-                        {session.user?.name?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
+                        <AvatarFallback className="bg-green-500 text-white">
+                          {session.user?.name?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
 
-                  <DropdownMenuContent className="w-56" align="end">
-                    <DropdownMenuLabel>
-                      <div className="flex flex-col">
-                        <span>{session.user?.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {session.user?.email}
-                        </span>
-                      </div>
-                    </DropdownMenuLabel>
+                    <DropdownMenuContent className="w-56" align="end">
+                      <DropdownMenuLabel>
+                        <div className="flex flex-col">
+                          <span>{session.user?.name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {session.user?.email}
+                          </span>
+                        </div>
+                      </DropdownMenuLabel>
 
-                    <DropdownMenuSeparator />
+                      <DropdownMenuSeparator />
 
-                    <DropdownMenuItem className="cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        Profile
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem className="cursor-pointer">
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      Orders
-                    </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <ShoppingCart className="mr-2 h-4 w-4" />
+                        Orders
+                        <span>{cartNumber}</span>
+                      </DropdownMenuItem>
 
-                    <DropdownMenuSeparator />
+                      <DropdownMenuSeparator />
 
-                    <DropdownMenuItem
-                      className="cursor-pointer text-red-500"
-                      onClick={() => signOut({ callbackUrl: "/login" })}
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      <DropdownMenuItem
+                        className="cursor-pointer text-red-500"
+                        onClick={() => signOut({ callbackUrl: "/login" })}
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               ) : (
                 <>
                   <Link

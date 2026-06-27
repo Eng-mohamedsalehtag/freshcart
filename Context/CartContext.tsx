@@ -4,6 +4,7 @@ import { getUserCart } from "@/CartAction/getUserCart";
 import { Cart } from "@/types/cart.type";
 import { useSession } from "next-auth/react";
 import React, { createContext, useEffect, useState } from "react";
+import { AddToCart } from "@/CartAction/AddToCart";
 
 export const CartContext = createContext({});
 
@@ -14,25 +15,32 @@ function CartProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const { data: session, status } = useSession();
 
+  async function fetchUserCart() {
+    if (status !== "authenticated" || !session?.accessToken) return;
+    setIsLoading(true);
+    try {
+      const data: Cart = await getUserCart(session.accessToken);
+      setCartNumber(data.numOfCartItems);
+      setTotalCartPrice(data.data.totalCartPrice);
+      setProducts(data.data.products);
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function addProductToCart(id: string) {
+    try {
+      const data = await AddToCart(id);
+      await fetchUserCart(); // بعد الإضافة، نحدّث الـ state فعليًا
+      return data;
+    } catch (error) {
+      console.error("Failed to add product to cart:", error);
+    }
+  }
+
   useEffect(() => {
-    if (status !== "authenticated" || !session?.accessToken) {
-      return;
-    }
-
-    async function fetchUserCart() {
-      setIsLoading(true);
-      try {
-        const data: Cart = await getUserCart(session.accessToken);
-        setCartNumber(data.numOfCartItems);
-        setTotalCartPrice(data.data.totalCartPrice);
-        setProducts(data.data.products);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch cart:", error);
-        setIsLoading(false);
-      }
-    }
-
     fetchUserCart();
   }, [session?.accessToken, status]);
 
@@ -46,6 +54,7 @@ function CartProvider({ children }: { children: React.ReactNode }) {
         products,
         setProducts,
         isLoading,
+        addProductToCart,
       }}
     >
       {children}
