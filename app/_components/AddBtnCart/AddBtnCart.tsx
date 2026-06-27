@@ -1,11 +1,17 @@
 "use client";
-import { AddToCart } from "@/CartAction/AddToCart";
 import React, { useContext } from "react";
 import { toast } from "sonner";
 import { CartContext } from "@/Context/CartContext";
 
 export const AddBtnCart = ({ id }: { id: string }) => {
-  const { addProductToCart } = useContext(CartContext);
+  const context = useContext(CartContext);
+
+  if (!context) {
+    throw new Error("AddBtnCart must be used within a CartProvider");
+  }
+
+  const { addProductToCart } = context;
+
   async function handleAddToCart() {
     try {
       const data = await addProductToCart(id);
@@ -19,6 +25,7 @@ export const AddBtnCart = ({ id }: { id: string }) => {
       console.log(error);
     }
   }
+
   return (
     <button
       className="w-full bg-green-500 text-white py-2.5 rounded-md hover:bg-green-600 transition-colors mt-4"

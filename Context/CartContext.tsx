@@ -5,8 +5,19 @@ import { Cart } from "@/types/cart.type";
 import { useSession } from "next-auth/react";
 import React, { createContext, useEffect, useState } from "react";
 import { AddToCart } from "@/CartAction/AddToCart";
-
-export const CartContext = createContext({});
+interface CartContextType {
+  cartNumber: number;
+  setCartNumber: React.Dispatch<React.SetStateAction<number>>;
+  totalCartPrice: number;
+  setTotalCartPrice: React.Dispatch<React.SetStateAction<number>>;
+  products: Cart["data"]["products"];
+  setProducts: React.Dispatch<React.SetStateAction<Cart["data"]["products"]>>;
+  isLoading: boolean;
+  addProductToCart: (id: string) => Promise<any>;
+}
+export const CartContext = createContext<CartContextType | undefined>(
+  undefined,
+);
 
 function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartNumber, setCartNumber] = useState(0);
