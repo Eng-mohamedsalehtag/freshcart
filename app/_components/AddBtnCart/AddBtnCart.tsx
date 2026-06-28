@@ -28,7 +28,7 @@ export const AddBtnCart = ({ id }: { id: string }) => {
 
   return (
     <button
-      className="w-full bg-green-500 text-white py-2.5 rounded-md hover:bg-green-600 transition-colors mt-4"
+      className="w-full bg-green-500 text-white py-2.5 rounded-md hover:bg-green-600 transition-colors mt-4 cursor-pointer"
       onClick={() => handleAddToCart()}
     >
       <i className="fa-solid fa-cart-plus"></i> add to cart

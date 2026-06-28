@@ -3,10 +3,7 @@ import type { Product } from "@/types/product.type";
 import { AddBtnCart } from "../AddBtnCart/AddBtnCart";
 function Card({ product }: { product: Product }) {
   return (
-    <div
-      key={product._id}
-      className="group p-4 rounded-md overflow-hidden hover:shadow-lg hover:border-green-500 border border-transparent transition-all duration-300"
-    >
+    <>
       {/* Image */}
       <div className="relative w-full h-48 mb-4">
         <img
@@ -36,8 +33,7 @@ function Card({ product }: { product: Product }) {
           </div>
         </div>
       </div>
-      {/* <AddBtnCart id={product._id} /> */}
-    </div>
+    </>
   );
 }
 

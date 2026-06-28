@@ -15,15 +15,19 @@ export default async function Page() {
       <CategorySlider />
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
         {data.map((product: Product) => (
-          <div className="flex flex-col">
+          <div
+            key={product._id}
+            className="group flex flex-col justify-between p-4 rounded-md overflow-hidden hover:shadow-lg hover:border-green-500 border border-transparent transition-all duration-300"
+          >
             <Link
-              className="cursor-pointer block"
-              key={product._id}
+              className="cursor-pointer block flex-grow"
               href={`/productsDetails/${product._id}`}
             >
               <Card product={product} />
             </Link>
-            <AddBtnCart id={product._id} />
+            <div className="translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer">
+              <AddBtnCart id={product._id} />
+            </div>
           </div>
         ))}
       </div>

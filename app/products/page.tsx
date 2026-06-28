@@ -13,13 +13,17 @@ export default async function Page() {
       </h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
         {products.map((product: Product) => (
-          <Link
-            className="cursor-pointer block"
+          <div
             key={product._id}
-            href={`/productsDetails/${product._id}`}
+            className="group flex flex-col justify-between p-4 rounded-md overflow-hidden hover:shadow-lg hover:border-green-500 border border-transparent transition-all duration-300"
           >
-            <Card product={product} />
-          </Link>
+            <Link
+              className="cursor-pointer block flex-grow"
+              href={`/productsDetails/${product._id}`}
+            >
+              <Card product={product} />
+            </Link>
+          </div>
         ))}
       </div>
     </div>
