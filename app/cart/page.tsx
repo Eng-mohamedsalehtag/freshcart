@@ -3,30 +3,62 @@
 import { CartContext } from "@/Context/CartContext";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useContext } from "react";
+import { toast } from "sonner";
+import Loading from "../_components/loading/loading";
 
 function Cart() {
-  const { isLoading, products, totalCartPrice } = useContext(CartContext) as {
+  const {
+    isLoading,
+    products,
+    totalCartPrice,
+    removeFromCart,
+    updateCartItemCount,
+  } = useContext(CartContext) as {
     isLoading: boolean;
     products: Array<{
       _id: string;
       count: number;
       price: number;
       product: {
+        _id: string;
         title: string;
         imageCover: string;
       };
     }>;
     totalCartPrice: number;
+    removeFromCart: (id: string) => Promise<any>;
+    updateCartItemCount: (id: string, count: number) => Promise<any>;
   };
+  async function handleUpdateCount(id: string, count: number) {
+    try {
+      const data = await updateCartItemCount(id, count);
+      toast.success("product updated successfully");
+    } catch (error) {
+      toast.error("failed to update product");
+    }
+  }
+  async function removeItem(id: string) {
+    try {
+      const data = await removeFromCart(id);
+      toast.success("product removed successfully");
+    } catch (error) {
+      toast.error("failed to remove product");
+    }
+  }
+  const { clearCart } = useContext(CartContext) as {
+    clearCart: () => Promise<any>;
+  };
+  async function handleClearCart() {
+    try {
+      const data = await clearCart();
+      toast.success("cart cleared successfully");
+    } catch (error) {
+      toast.error("failed to clear cart");
+    }
+  }
 
   if (isLoading) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center px-4 text-center">
-        <p className="text-base font-medium text-slate-600 dark:text-slate-300">
-          Loading...
-        </p>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
@@ -41,8 +73,15 @@ function Cart() {
               Your Shopping Cart
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-500 dark:text-slate-400">
-              Review your items, adjust quantities, and see the total price before checkout.
+              Review your items, adjust quantities, and see the total price
+              before checkout.
             </p>
+            <button
+              className="mt-2 bg-red-500 text-white rounded-md px-2 py-1 cursor-pointer"
+              onClick={handleClearCart}
+            >
+              Clear Cart
+            </button>
           </div>
 
           <div className="rounded-3xl bg-emerald-50 px-5 py-4 text-right shadow-sm shadow-emerald-200/70 dark:bg-emerald-500/10">
@@ -84,7 +123,10 @@ function Cart() {
                   <div className="flex items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white px-3 py-2 text-slate-700 shadow-sm shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200">
                     <button
                       type="button"
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+                      onClick={() =>
+                        handleUpdateCount(item.product._id, item.count - 1)
+                      }
                     >
                       <Minus className="h-4 w-4" />
                     </button>
@@ -93,7 +135,10 @@ function Cart() {
                     </span>
                     <button
                       type="button"
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800 cursor-pointer"
+                      onClick={() =>
+                        handleUpdateCount(item.product._id, item.count + 1)
+                      }
                     >
                       <Plus className="h-4 w-4" />
                     </button>
@@ -103,7 +148,8 @@ function Cart() {
                 <div className="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
                   <button
                     type="button"
-                    className="inline-flex items-center gap-2 text-emerald-700 transition hover:text-emerald-900 dark:text-emerald-300 dark:hover:text-emerald-100"
+                    className="inline-flex items-center gap-2 text-emerald-700 transition hover:text-emerald-900 dark:text-emerald-300 dark:hover:text-emerald-100 cursor-pointer"
+                    onClick={() => removeItem(item.product._id)}
                   >
                     <Trash2 className="h-4 w-4" />
                     Remove

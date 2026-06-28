@@ -5,6 +5,7 @@ import { Cart } from "@/types/cart.type";
 import { useSession } from "next-auth/react";
 import React, { createContext, useEffect, useState } from "react";
 import { AddToCart } from "@/CartAction/AddToCart";
+import { RemoveFromCart } from "@/CartAction/removeCartItem";
 interface CartContextType {
   cartNumber: number;
   setCartNumber: React.Dispatch<React.SetStateAction<number>>;
@@ -14,6 +15,9 @@ interface CartContextType {
   setProducts: React.Dispatch<React.SetStateAction<Cart["data"]["products"]>>;
   isLoading: boolean;
   addProductToCart: (id: string) => Promise<any>;
+  removeFromCart: (id: string) => Promise<any>;
+  updateCartItemCount: (id: string, count: number) => Promise<any>;
+  clearCart: () => Promise<any>;
 }
 export const CartContext = createContext<CartContextType | undefined>(
   undefined,
@@ -26,9 +30,9 @@ function CartProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const { data: session, status } = useSession();
 
-  async function fetchUserCart() {
+  async function fetchUserCart(showLoading = true) {
     if (status !== "authenticated" || !session?.accessToken) return;
-    setIsLoading(true);
+    if (showLoading) setIsLoading(true);
     try {
       const data: Cart = await getUserCart(session.accessToken);
       setCartNumber(data.numOfCartItems);
@@ -37,24 +41,65 @@ function CartProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Failed to fetch cart:", error);
     } finally {
-      setIsLoading(false);
+      if (showLoading) setIsLoading(false);
     }
   }
 
   async function addProductToCart(id: string) {
     try {
-      const data = await AddToCart(id);
-      await fetchUserCart(); // بعد الإضافة، نحدّث الـ state فعليًا
+      const res = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: id }),
+      });
+      const data = await res.json();
+      await fetchUserCart(false); // ⬅️ من غير ما يظهر Loading screen
       return data;
     } catch (error) {
       console.error("Failed to add product to cart:", error);
     }
   }
 
-  useEffect(() => {
-    fetchUserCart();
-  }, [session?.accessToken, status]);
+  async function removeFromCart(id: string) {
+    try {
+      const res = await fetch(`/api/cart?id=${id}`, { method: "DELETE" });
+      const data = await res.json();
+      await fetchUserCart(false); // ⬅️ من غير ما يظهر Loading screen
+      return data;
+    } catch (error) {
+      console.error("Failed to remove cart item:", error);
+    }
+  }
+  async function updateCartItemCount(id: string, count: number) {
+    try {
+      const res = await fetch(`/api/cart?id=${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ count }),
+      });
 
+      const data = await res.json();
+      await fetchUserCart(false);
+      return data;
+    } catch (error) {
+      console.error("Failed to update cart item count:", error);
+    }
+  }
+  //clear whole cart
+  async function clearCart() {
+    try {
+      const res = await fetch(`/api/cart`, { method: "DELETE" });
+      const data = await res.json();
+      await fetchUserCart(false); // ⬅️ من غير ما يظهر Loading screen
+      return data;
+    } catch (error) {
+      console.error("Failed to clear cart:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUserCart(); // هنا بس هيظهر Loading لأنه أول تحميل
+  }, [session?.accessToken, status]);
   return (
     <CartContext.Provider
       value={{
@@ -66,6 +111,9 @@ function CartProvider({ children }: { children: React.ReactNode }) {
         setProducts,
         isLoading,
         addProductToCart,
+        removeFromCart,
+        updateCartItemCount,
+        clearCart,
       }}
     >
       {children}

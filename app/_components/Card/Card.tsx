@@ -1,5 +1,6 @@
 import React from "react";
 import type { Product } from "@/types/product.type";
+import { AddBtnCart } from "../AddBtnCart/AddBtnCart";
 function Card({ product }: { product: Product }) {
   return (
     <div
@@ -35,6 +36,7 @@ function Card({ product }: { product: Product }) {
           </div>
         </div>
       </div>
+      {/* <AddBtnCart id={product._id} /> */}
     </div>
   );
 }

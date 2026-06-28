@@ -5,6 +5,7 @@ import Link from "next/link";
 import MainSlider from "@/app/_components/MainSlider/MainSlider";
 import CategorySlider from "./_components/CategorySlider/CategorySlider";
 import type { Product } from "@/types/product.type";
+import { AddBtnCart } from "./_components/AddBtnCart/AddBtnCart";
 export default async function Page() {
   const data: Product[] = await getProducts();
 
@@ -14,13 +15,16 @@ export default async function Page() {
       <CategorySlider />
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
         {data.map((product: Product) => (
-          <Link
-            className="cursor-pointer block"
-            key={product._id}
-            href={`/productsDetails/${product._id}`}
-          >
-            <Card product={product} />
-          </Link>
+          <div className="flex flex-col">
+            <Link
+              className="cursor-pointer block"
+              key={product._id}
+              href={`/productsDetails/${product._id}`}
+            >
+              <Card product={product} />
+            </Link>
+            <AddBtnCart id={product._id} />
+          </div>
         ))}
       </div>
     </div>
